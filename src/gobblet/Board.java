@@ -108,3 +108,50 @@ public class Board implements Cloneable{
         return op;
     }
 }
+
+   List<Piece> getOffBoard() {
+        List<Piece> op = new ArrayList<>();
+        for (Piece p : pieces) {
+            if (!p.isOnBoard()) {
+                op.add(p);
+            }
+        }
+        return op;
+    }
+ public Piece[] getWinningLine() {
+     Piece[] line = new Piece[4];
+        //check all rows
+        for (int row = 0; row < length; row++) {
+            for (int i = 0; i < length; i++) {
+                line[i] = getPiece(row, i);
+            }
+            if (checkLine(line)) {
+                return line;
+            }
+        }
+     //check all columns
+     for (int col = 0; col < length; col++) {
+            for (int i = 0; i < length; i++) {
+                line[i] = getPiece(i, col);
+            }
+            if (checkLine(line)) {
+                return line;
+            }
+        }
+     //check one diagonal
+     for (int i=0; i<lenght; i++){
+         line[i] = getPiece(i,i);
+     }
+     if(chechline(line)){
+         return line;
+     }
+     //checkthe other diagonal
+     for (int i=0; i < lenght; i+=){
+         line[i]= getPiece(i, lenght -i -1);
+     }
+     if (checkLine(line)) {
+            return line;
+        }
+
+        return null;
+ }
