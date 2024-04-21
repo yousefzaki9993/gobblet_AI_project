@@ -1,15 +1,31 @@
 package gobblet;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GameGUI {
+
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 600;
+    private static final int POSX = WIDTH / 4;
+    private static final int POSY = HEIGHT / 4;
+    private static final int R = WIDTH / 16;
+    private static GameSystem gs;
+    private static boolean isBlackTurn = false;
+    private static boolean picked = false;
 
     public static class player implements Observer {
 
@@ -35,37 +51,31 @@ public class GameGUI {
         }
 
     }
-    private static final int WIDTH = 512;
-    private static final int HIEGHT = 512;
-    private static final int POSX = 50;
-    private static final int POSY = 50;
-    private static GameSystem gs;
-    private static boolean isBlackTurn = false;
-    private static boolean picked = false;
+
 
     public static void main(String[] args) {
         gs = new GameSystem(new player(false), new player(true));
-        JFrame frame = new JFrame();
-        frame.setBounds(POSX, POSY, WIDTH, HIEGHT);
+
+        frame.setResizable(false);
         JPanel pn = new JPanel() {
             @Override
             public void paint(Graphics g) {
                 g.setColor(Color.black);
-                g.fillRect(80, 80, 300, 300);
-                g.setColor(Color.getHSBColor(144, 144, 144));
-                g.fillRect(100, 100, 260, 260);
-                g.setColor(Color.RED);
-                for (int y = 0; y < 4; y++) {
-                    for (int x = 0; x < 4; x++) {
-                        drawCircleByCenter(g, x * 64 + 133, y * 64 + 133, 30);
-                    }
+                g.fillRect(POSX - 20, POSY - 20, GameGUI.WIDTH / 2 + 40, GameGUI.HEIGHT / 2 + 40);
+                try {
+                    g.drawImage(ImageIO.read(new File("assets/board.png")), POSX, POSY, GameGUI.WIDTH / 2, GameGUI.HEIGHT / 2, null);
+                    paintPieces(g);
+                } catch (IOException ex) {
+                    Logger.getLogger(GameGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                paintPieces(g);
             }
         };
-        frame.add(pn);
+        pn.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        frame.getContentPane().add(pn);
 
-        frame.addMouseListener(new MouseListener() {
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        pn.addMouseListener((new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Not needed
@@ -73,7 +83,20 @@ public class GameGUI {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                
+                Point p = e.getPoint();
+                int x_index = (p.x - POSX) / (WIDTH / 8);
+                int y_index = (p.y - POSY) < 0 ? -1 : ((p.y - POSY) / (HEIGHT / 8) > 3 ? 4 : (e.getY() - POSY) / (HEIGHT / 8)); //to account for integer approximation
+                System.out.println(x_index + "," + y_index);
+
+                if (!picked) {
+                    picked = gs.pick(isBlackTurn, x_index, y_index);
+
+                } else {
+                    picked = !gs.move(isBlackTurn, x_index, y_index);
+
+                }
+
+                frame.repaint();
             }
 
             @Override
@@ -91,7 +114,7 @@ public class GameGUI {
                 // Not needed
             }
 
-        });
+        }));
 
         frame.setDefaultCloseOperation(3);
         frame.setVisible(true);
@@ -104,45 +127,54 @@ public class GameGUI {
         g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
 
-    static void paintPieces(Graphics g) {
+    static void paintPieces(Graphics g) throws IOException {
+        
         List<Piece> pieces = gs.getBoardCopy().getMovables();
         for (Piece p : pieces) {
-            int x_pos = p.getX() * 64 + 133;
-            int y_pos = p.getY() * 64 + 133;
+            int x_pos = p.getX() * (WIDTH / 8) + POSX;
+            int y_pos = p.getY() * (HEIGHT / 8) + POSY;
             if (p.getY() < 0) {
-                y_pos = 40;
+                y_pos = HEIGHT / 10;
             }
             if (p.getY() == 4) {
-                y_pos = 410;
+                y_pos = HEIGHT / 10;
             }
 
             if (p.isPicked()) {
                 g.setColor(Color.green);
 
-                drawCircleByCenter(g, x_pos, y_pos, 30);
+                drawCircleByCenter(g, x_pos + R, y_pos + R, 35);
                 if (p.getSize() == 1) {
-                    drawCircleByCenter(g, x_pos, y_pos, 20);
+                    drawCircleByCenter(g, x_pos + R, y_pos + R, 20);
                 }
             }
+            String color;
             if (p.isBlack()) {
-                g.setColor(Color.black);
+               color = "black";
             } else {
-                g.setColor(Color.magenta);
+               color = "white";
             }
-            if (p.getSize() == 4) {
-                drawCircleByCenter(g, x_pos, y_pos, 28);
-            }
-            if (p.getSize() == 3) {
-                drawCircleByCenter(g, x_pos, y_pos, 25);
-            }
-            if (p.getSize() == 2) {
-                drawCircleByCenter(g, x_pos, y_pos, 22);
-            }
-            if (p.getSize() == 1) {
-                drawCircleByCenter(g, x_pos, y_pos, 19);
+
+        
+            switch (p.getSize()) {
+                case 4 -> {
+
+                    g.drawImage(ImageIO.read(new File("assets/extra large " + color + ".png")), x_pos, y_pos, 2 * R, 2 * R, null);
+                }
+                case 3 -> {
+
+                    g.drawImage(ImageIO.read(new File("assets/large " + color + ".png")), x_pos, y_pos, 2 * R, 2 * R, null);
+                }
+                case 2 -> {
+
+                    g.drawImage(ImageIO.read(new File("assets/medium " + color + ".png")), x_pos, y_pos, 2 * R, 2 * R, null);
+                }
+                case 1 -> {
+
+                    g.drawImage(ImageIO.read(new File("assets/small " + color + ".png")), x_pos, y_pos, 2 * R, 2 * R, null);
+                }
+                default -> {
+                }
             }
 
         }
-    }
-
-}
