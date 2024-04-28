@@ -13,10 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GameGUI {
+public class GameGUI extends JPanel {
 
     private static final int WIDTH = 600;
     private static final int HEIGHT = 600;
@@ -26,7 +25,7 @@ public class GameGUI {
     private static GameSystem gs;
     private static boolean isBlackTurn = false;
     private static boolean picked = false;
-
+    private static boolean run  = false;
     public static class player implements Observer {
 
         private final boolean isBlack;
@@ -52,30 +51,39 @@ public class GameGUI {
 
     }
 
+    @Override
+    public void paint(Graphics g) {
+        g.clearRect(0, 0, WIDTH, HEIGHT);
+        g.setColor(Color.black);
+        g.fillRect(POSX - 20, POSY - 20, GameGUI.WIDTH / 2 + 40, GameGUI.HEIGHT / 2 + 40);
+        try {
+            g.drawImage(ImageIO.read(new File("assets/board.png")), POSX, POSY, GameGUI.WIDTH / 2, GameGUI.HEIGHT / 2, null);
+            paintPieces(g);
+        } catch (IOException ex) {
+            Logger.getLogger(GameGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-    public static void main(String[] args) {
+    public static void start(){
+        run = true;
         gs = new GameSystem(new player(false), new player(true));
+        
+    }
+    public static void pause(){
+        run = false;
+    }
+    public static void resume(){
+        run = true;
+    }
+    public GameGUI() {
+        
 
-        frame.setResizable(false);
-        JPanel pn = new JPanel() {
-            @Override
-            public void paint(Graphics g) {
-                g.setColor(Color.black);
-                g.fillRect(POSX - 20, POSY - 20, GameGUI.WIDTH / 2 + 40, GameGUI.HEIGHT / 2 + 40);
-                try {
-                    g.drawImage(ImageIO.read(new File("assets/board.png")), POSX, POSY, GameGUI.WIDTH / 2, GameGUI.HEIGHT / 2, null);
-                    paintPieces(g);
-                } catch (IOException ex) {
-                    Logger.getLogger(GameGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        pn.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        frame.getContentPane().add(pn);
+        this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        
 
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        pn.addMouseListener((new MouseListener() {
+        
+        
+        this.addMouseListener((new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Not needed
@@ -83,12 +91,20 @@ public class GameGUI {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if(!run) return;
                 Point p = e.getPoint();
-                int x_index = (p.x - POSX) / (WIDTH / 8);
-                int y_index = (p.y - POSY) < 0 ? -1 : ((p.y - POSY) / (HEIGHT / 8) > 3 ? 4 : (e.getY() - POSY) / (HEIGHT / 8)); //to account for integer approximation
-                System.out.println(x_index + "," + y_index);
+                int x = p.x;
+                int y = p.y;
+                int x_index = (int)Math.floor((x - POSX) / (WIDTH / 8.0));
+                int y_index = (int)Math.floor((y - POSY) / (HEIGHT / 8.0)); //to account for integer approximation
 
-                if (!picked) {
+                if((x_index > 3||x_index < 0 ||y_index > 4||y_index < -1)  && picked){//unpick
+                    picked = !gs.unpick(isBlackTurn);
+                }else if((y_index == 4||y_index == -1)  && picked){//unpick & repick
+                    picked = !gs.unpick(isBlackTurn);
+                    picked = gs.pick(isBlackTurn, x_index, y_index);
+                }
+                else if (!picked) {
                     picked = gs.pick(isBlackTurn, x_index, y_index);
 
                 } else {
@@ -96,7 +112,7 @@ public class GameGUI {
 
                 }
 
-                frame.repaint();
+                repaint();
             }
 
             @Override
@@ -116,9 +132,7 @@ public class GameGUI {
 
         }));
 
-        frame.setDefaultCloseOperation(3);
-        frame.setVisible(true);
-
+        
     }
     //end of main
 
@@ -128,7 +142,7 @@ public class GameGUI {
     }
 
     static void paintPieces(Graphics g) throws IOException {
-        
+        if(!run) return;
         List<Piece> pieces = gs.getBoardCopy().getMovables();
         for (Piece p : pieces) {
             int x_pos = p.getX() * (WIDTH / 8) + POSX;
@@ -137,7 +151,7 @@ public class GameGUI {
                 y_pos = HEIGHT / 10;
             }
             if (p.getY() == 4) {
-                y_pos = HEIGHT / 10;
+                y_pos = 9 * HEIGHT / 10 - 2 * R;
             }
 
             if (p.isPicked()) {
@@ -150,12 +164,11 @@ public class GameGUI {
             }
             String color;
             if (p.isBlack()) {
-               color = "black";
+                color = "black";
             } else {
-               color = "white";
+                color = "white";
             }
 
-        
             switch (p.getSize()) {
                 case 4 -> {
 
@@ -178,3 +191,6 @@ public class GameGUI {
             }
 
         }
+    }
+
+}

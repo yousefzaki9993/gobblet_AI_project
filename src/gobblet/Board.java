@@ -35,7 +35,7 @@ public class Board implements Cloneable{
             return true;
         }
 
-        if (toP.getSize() > p.getSize()) {// if that piece was smaller (overtake it)
+        if (toP.getSize() >= p.getSize()) {// if that piece was smaller (overtake it)
             illegalNote = "Illegal Move (can't overtake bigger or equal piece)";
             return false;
         }
@@ -107,9 +107,8 @@ public class Board implements Cloneable{
         }
         return op;
     }
-}
-
-   List<Piece> getOffBoard() {
+    
+    List<Piece> getOffBoard() {
         List<Piece> op = new ArrayList<>();
         for (Piece p : pieces) {
             if (!p.isOnBoard()) {
@@ -118,8 +117,9 @@ public class Board implements Cloneable{
         }
         return op;
     }
- public Piece[] getWinningLine() {
-     Piece[] line = new Piece[4];
+
+    public Piece[] getWinningLine() {
+        Piece[] line = new Piece[4];
         //check all rows
         for (int row = 0; row < length; row++) {
             for (int i = 0; i < length; i++) {
@@ -129,8 +129,9 @@ public class Board implements Cloneable{
                 return line;
             }
         }
-     //check all columns
-     for (int col = 0; col < length; col++) {
+
+        //check all columns
+        for (int col = 0; col < length; col++) {
             for (int i = 0; i < length; i++) {
                 line[i] = getPiece(i, col);
             }
@@ -138,20 +139,102 @@ public class Board implements Cloneable{
                 return line;
             }
         }
-     //check one diagonal
-     for (int i=0; i<lenght; i++){
-         line[i] = getPiece(i,i);
-     }
-     if(chechline(line)){
-         return line;
-     }
-     //checkthe other diagonal
-     for (int i=0; i < lenght; i+=){
-         line[i]= getPiece(i, lenght -i -1);
-     }
-     if (checkLine(line)) {
+
+        //check one diagonal
+        for (int i = 0; i < length; i++) {
+            line[i] = getPiece(i, i);
+        }
+        if (checkLine(line)) {
+            return line;
+        }
+
+        //check the other diagonal
+        for (int i = 0; i < length; i++) {
+            line[i] = getPiece(i, length - i - 1);
+        }
+        if (checkLine(line)) {
             return line;
         }
 
         return null;
- }
+    }
+    
+    private boolean checkLine(Piece[] line) {
+        for (Piece p : line) {
+            if (p == null) {
+                return false;
+            }
+        }
+        return line[0].isBlack() == line[1].isBlack()
+                && line[1].isBlack() == line[2].isBlack()
+                && line[2].isBlack() == line[3].isBlack();
+    }
+
+    public boolean checkThreeInLine(int col,int row,  boolean isBlack) {
+        Piece[] line = new Piece[4];
+        //check row
+
+        for (int i = 0; i < length; i++) {
+            line[i] = getPiece(row, i);
+        }
+        if (check3(line, isBlack)) {
+            return true;
+        }
+
+        //check column
+        for (int i = 0; i < length; i++) {
+            line[i] = getPiece(i, col);
+        }
+        if (check3(line, isBlack)) {
+            return true;
+        }
+
+        //check one diagonal
+        if (col == row) {
+            for (int i = 0; i < length; i++) {
+                line[i] = getPiece(i, i);
+            }
+            if (check3(line, isBlack)) {
+                return true;
+            }
+        }
+
+        //check the other diagonal
+        if (col == length - row - 1) {
+            for (int i = 0; i < length; i++) {
+                line[i] = getPiece(i, length - i - 1);
+            }
+            if (check3(line, isBlack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean check3(Piece[] line, boolean isBlack) {
+        int c = 0;
+        for (Piece p : line) {
+            if (p != null && p.isBlack() == isBlack) {
+                c++;
+            }
+            
+        }
+        
+        return c >= 3;
+        
+    }
+
+    public String getLastIllegalNote() {
+        return illegalNote;
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        super.clone();
+        List<Piece> ps = new ArrayList<>();
+        for (Piece p : pieces) {
+            ps.add(p.clone());
+        }
+        return new Board(ps);
+    }
+}
