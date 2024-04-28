@@ -292,6 +292,8 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
         GameGUI.start(pt1, pt2);
         gamePanel.repaint();
         feedback.setText("Game Restarted!");
+        status_box.setText("WHITE TURN");
+        GameGUI.addNeutralObserver(this);
         startTime = System.currentTimeMillis();
     }//GEN-LAST:event_restartButtonActionPerformed
     private void disableRadioButtons(){

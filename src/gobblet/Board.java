@@ -35,7 +35,7 @@ public class Board implements Cloneable{
             return true;
         }
 
-        if (toP.getSize() > p.getSize()) {// if that piece was smaller (overtake it)
+        if (toP.getSize() >= p.getSize()) {// if that piece was smaller (overtake it)
             illegalNote = "Illegal Move (can't overtake bigger or equal piece)";
             return false;
         }

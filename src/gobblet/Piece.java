@@ -67,4 +67,29 @@ public class Piece implements Cloneable{
         return new Piece(x, y, isBlack, size,picked);
     }
 
+    public boolean isPartOfWinningSequence(Board board, int deltaX, int deltaY, boolean isBlack) {
+        int x = getX();
+        int y = getY();
+        int count = 0;
+
+        // Check in the positive direction
+        while (board.getPiece(x, y) != null && board.getPiece(x, y).isBlack() == isBlack) {
+            count++;
+            x += deltaX;
+            y += deltaY;
+        }
+
+        x = getX() - deltaX;
+        y = getY() - deltaY;
+
+        // Check in the negative direction
+        while (board.getPiece(x, y) != null && board.getPiece(x, y).isBlack() == isBlack) {
+            count++;
+            x -= deltaX;
+            y -= deltaY;
+        }
+
+        return count >= 3; // Adjust the threshold based on your game's winning conditions
+    }
+
 }
