@@ -20,7 +20,14 @@ public class GameSystem {
         notifier.add(player1);
         notifier.add(player2);
     }
-
+    public boolean unpick(boolean isBlackTurn){
+        if(!picked.isOnBoard()){
+            picked.unpick();
+            picked = null;
+            return true;
+        }
+        return false;
+    }
     public boolean move(boolean isBlackTurn, int toX, int toY) { //returns false if move is invalide
         if (picked.getX() == toX && picked.getY() == toY) {//unpick
             if (toY > -1 && toY < 4) {
@@ -46,8 +53,10 @@ public class GameSystem {
                 turn = !turn;
             }
             notifier.notifyPlayer(!isBlackTurn);//notify end of turn
+            
             return true;
         }
+        
         return false;
     }
 
@@ -117,4 +126,8 @@ public class GameSystem {
         return turn;
     }
 
+    public String getBoardLastIllegalNote() {
+        return board.getLastIllegalNote();
+    }
+    
 }
