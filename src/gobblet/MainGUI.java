@@ -4,14 +4,22 @@
  */
 package gobblet;
 
+import gobblet.GameGUI.playerType;
+import javax.swing.Timer;
 /**
  *
  * @author Ghaith
  */
-public class MainGUI extends javax.swing.JFrame {
+public class MainGUI extends javax.swing.JFrame implements Observer{
 
     private static boolean run = false;
     private static boolean started = false;
+    private static playerType pt1 = playerType.USER;
+    private static playerType pt2 = playerType.USER;
+    Timer t;
+    private long startTime;
+    private long pauseTime;
+    
     /**
      * Creates new form MainGUI
      */
@@ -31,23 +39,23 @@ public class MainGUI extends javax.swing.JFrame {
         WHITE = new javax.swing.ButtonGroup();
         BLACK = new javax.swing.ButtonGroup();
         gamePanel = new GameGUI();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        R_white_player = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jRadioButton7 = new javax.swing.JRadioButton();
+        R_white_easy = new javax.swing.JRadioButton();
+        R_white_medium = new javax.swing.JRadioButton();
+        R_white_hard = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton8 = new javax.swing.JRadioButton();
-        jRadioButton9 = new javax.swing.JRadioButton();
-        jRadioButton10 = new javax.swing.JRadioButton();
+        R_black_player = new javax.swing.JRadioButton();
+        R_black_easy = new javax.swing.JRadioButton();
+        R_black_medium = new javax.swing.JRadioButton();
+        R_black_hard = new javax.swing.JRadioButton();
         restartButton = new javax.swing.JButton();
         pauseButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        status_box = new javax.swing.JTextField();
+        timer_box = new javax.swing.JTextField();
         feedback = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -56,6 +64,11 @@ public class MainGUI extends javax.swing.JFrame {
         gamePanel.setMinimumSize(new java.awt.Dimension(600, 600));
         gamePanel.setName("gamePanel"); // NOI18N
         gamePanel.setPreferredSize(new java.awt.Dimension(600, 600));
+        gamePanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gamePanelMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
         gamePanel.setLayout(gamePanelLayout);
@@ -68,81 +81,83 @@ public class MainGUI extends javax.swing.JFrame {
             .addGap(0, 600, Short.MAX_VALUE)
         );
 
-        WHITE.add(jRadioButton1);
-        jRadioButton1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton1.setText("Player");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        WHITE.add(R_white_player);
+        R_white_player.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_white_player.setSelected(true);
+        R_white_player.setText("Player");
+        R_white_player.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                R_white_playerActionPerformed(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jLabel1.setText("WHITE:");
 
-        WHITE.add(jRadioButton5);
-        jRadioButton5.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton5.setText("CPU Easy");
-        jRadioButton5.addActionListener(new java.awt.event.ActionListener() {
+        WHITE.add(R_white_easy);
+        R_white_easy.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_white_easy.setText("CPU Easy");
+        R_white_easy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton5ActionPerformed(evt);
+                R_white_easyActionPerformed(evt);
             }
         });
 
-        WHITE.add(jRadioButton6);
-        jRadioButton6.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton6.setText("CPU Medium");
-        jRadioButton6.addActionListener(new java.awt.event.ActionListener() {
+        WHITE.add(R_white_medium);
+        R_white_medium.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_white_medium.setText("CPU Medium");
+        R_white_medium.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton6ActionPerformed(evt);
+                R_white_mediumActionPerformed(evt);
             }
         });
 
-        WHITE.add(jRadioButton7);
-        jRadioButton7.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton7.setText("CPU Hard");
-        jRadioButton7.addActionListener(new java.awt.event.ActionListener() {
+        WHITE.add(R_white_hard);
+        R_white_hard.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_white_hard.setText("CPU Hard");
+        R_white_hard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton7ActionPerformed(evt);
+                R_white_hardActionPerformed(evt);
             }
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jLabel2.setText("BLACK:");
 
-        BLACK.add(jRadioButton2);
-        jRadioButton2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton2.setText("Player");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        BLACK.add(R_black_player);
+        R_black_player.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_black_player.setSelected(true);
+        R_black_player.setText("Player");
+        R_black_player.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                R_black_playerActionPerformed(evt);
             }
         });
 
-        BLACK.add(jRadioButton8);
-        jRadioButton8.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton8.setText("CPU Easy");
-        jRadioButton8.addActionListener(new java.awt.event.ActionListener() {
+        BLACK.add(R_black_easy);
+        R_black_easy.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_black_easy.setText("CPU Easy");
+        R_black_easy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton8ActionPerformed(evt);
+                R_black_easyActionPerformed(evt);
             }
         });
 
-        BLACK.add(jRadioButton9);
-        jRadioButton9.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton9.setText("CPU Medium");
-        jRadioButton9.addActionListener(new java.awt.event.ActionListener() {
+        BLACK.add(R_black_medium);
+        R_black_medium.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_black_medium.setText("CPU Medium");
+        R_black_medium.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton9ActionPerformed(evt);
+                R_black_mediumActionPerformed(evt);
             }
         });
 
-        BLACK.add(jRadioButton10);
-        jRadioButton10.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jRadioButton10.setText("CPU Hard");
-        jRadioButton10.addActionListener(new java.awt.event.ActionListener() {
+        BLACK.add(R_black_hard);
+        R_black_hard.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        R_black_hard.setText("CPU Hard");
+        R_black_hard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton10ActionPerformed(evt);
+                R_black_hardActionPerformed(evt);
             }
         });
 
@@ -175,19 +190,15 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jLabel4.setText("STATUS:");
 
-        jTextField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("STOPPED");
-        jTextField1.setFocusable(false);
+        status_box.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        status_box.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        status_box.setText("STOPPED");
+        status_box.setFocusable(false);
 
-        jTextField2.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("00:00");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
+        timer_box.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        timer_box.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        timer_box.setText("00:00");
+        timer_box.setFocusable(false);
 
         feedback.setText("Press the play button to start the game");
 
@@ -205,26 +216,26 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_white_hard, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_white_player, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_white_easy, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_white_medium, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(stopButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(restartButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(pauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jRadioButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_black_hard, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_black_player, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jRadioButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_black_easy, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(R_black_medium, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(status_box, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(timer_box, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10))))
         );
         layout.setVerticalGroup(
@@ -243,31 +254,31 @@ public class MainGUI extends javax.swing.JFrame {
                         .addGap(23, 23, 23)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton1)
+                        .addComponent(R_white_player)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton5)
+                        .addComponent(R_white_easy)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton6)
+                        .addComponent(R_white_medium)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton7)
+                        .addComponent(R_white_hard)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton2)
+                        .addComponent(R_black_player)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton8)
+                        .addComponent(R_black_easy)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton9)
+                        .addComponent(R_black_medium)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton10)
+                        .addComponent(R_black_hard)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(status_box, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(timer_box, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(feedback)
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -276,71 +287,128 @@ public class MainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
-    private void jRadioButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton5ActionPerformed
-
-    private void jRadioButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton6ActionPerformed
-
-    private void jRadioButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton7ActionPerformed
-
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
-
-    private void jRadioButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton8ActionPerformed
-
-    private void jRadioButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton9ActionPerformed
-
-    private void jRadioButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton10ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton10ActionPerformed
-
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
-
+        GameGUI.stop();
+        GameGUI.start(pt1, pt2);
+        gamePanel.repaint();
+        feedback.setText("Game Restarted!");
+        startTime = System.currentTimeMillis();
     }//GEN-LAST:event_restartButtonActionPerformed
-
+    private void disableRadioButtons(){
+        R_black_player.setEnabled(false);
+        R_black_easy.setEnabled(false);
+        R_black_medium.setEnabled(false);
+        R_black_hard.setEnabled(false);
+        R_white_player.setEnabled(false);
+        R_white_easy.setEnabled(false);
+        R_white_medium.setEnabled(false);
+        R_white_hard.setEnabled(false);
+    }
+    private void enableRadioButtons(){
+        R_black_player.setEnabled(true);
+        R_black_easy.setEnabled(true);
+        R_black_medium.setEnabled(true);
+        R_black_hard.setEnabled(true);
+        R_white_player.setEnabled(true);
+        R_white_easy.setEnabled(true);
+        R_white_medium.setEnabled(true);
+        R_white_hard.setEnabled(true);
+    }
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
         if(!started){
-            GameGUI.start();
+            
+            GameGUI.start(pt1,pt2);
             gamePanel.repaint();
             stopButton.setEnabled(true);
             restartButton.setEnabled(true);
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png")));
             run = true;
             started = true;
+            disableRadioButtons();
+            feedback.setText("game started!");
+            status_box.setText("WHITE TURN");
+            startTime = System.currentTimeMillis();
+            t = new Timer(1000, (e) -> {
+                long now = System.currentTimeMillis();
+                long elapsedMillis = now - startTime;
+                long elapsedSeconds = elapsedMillis / 1000;
+                long elapsedMinutes = elapsedSeconds / 60;
+                elapsedSeconds = elapsedSeconds % 60;
+                timer_box.setText(String.format("%02d:%02d", elapsedMinutes, elapsedSeconds));
+            });
+            t.start();
+            GameGUI.addNeutralObserver(this);
         }
         else if (!run) {
             GameGUI.resume();
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png")));
             run = true;
+            feedback.setText("game resumed!");
+            startTime += System.currentTimeMillis() - pauseTime;
+            t.start();
         }else{
             GameGUI.pause();
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
             run = false;
+            feedback.setText("game paused!");
+            pauseTime = System.currentTimeMillis();
+            t.stop();
         }
         
     }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-
+        run=false;
+        started = false;
+        GameGUI.stop();
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
+        stopButton.setEnabled(false);
+        restartButton.setEnabled(false);
+        enableRadioButtons();
+        gamePanel.repaint();
+        feedback.setText("Game Stopped!");
+        t.stop();
     }//GEN-LAST:event_stopButtonActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    private void R_white_playerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_playerActionPerformed
+        pt1 = playerType.USER;
+    }//GEN-LAST:event_R_white_playerActionPerformed
+
+    private void R_white_easyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_easyActionPerformed
+        pt1 = playerType.CPU_EASY;
+    }//GEN-LAST:event_R_white_easyActionPerformed
+
+    private void R_white_mediumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_mediumActionPerformed
+        pt1 = playerType.CPU_MID;
+    }//GEN-LAST:event_R_white_mediumActionPerformed
+
+    private void R_white_hardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_hardActionPerformed
+        pt1 = playerType.CPU_HARD;
+    }//GEN-LAST:event_R_white_hardActionPerformed
+
+    private void R_black_playerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_black_playerActionPerformed
+        pt2 = playerType.USER;
+    }//GEN-LAST:event_R_black_playerActionPerformed
+
+    private void R_black_easyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_black_easyActionPerformed
+        pt2 = playerType.CPU_EASY;
+    }//GEN-LAST:event_R_black_easyActionPerformed
+
+    private void R_black_mediumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_black_mediumActionPerformed
+        pt2 = playerType.CPU_MID;
+    }//GEN-LAST:event_R_black_mediumActionPerformed
+
+    private void R_black_hardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_black_hardActionPerformed
+        pt2 = playerType.CPU_HARD;
+    }//GEN-LAST:event_R_black_hardActionPerformed
+
+    private void gamePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gamePanelMouseClicked
+        if(run){
+            status_box.setText(GameGUI.isBlackTurn()?"BLACK TURN":"WHITE TURN");
+            feedback.setText(GameGUI.getFeedback());
+        }
+        
+    }//GEN-LAST:event_gamePanelMouseClicked
 
     /**
      * @param args the command line arguments
@@ -383,6 +451,14 @@ public class MainGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup BLACK;
+    private javax.swing.JRadioButton R_black_easy;
+    private javax.swing.JRadioButton R_black_hard;
+    private javax.swing.JRadioButton R_black_medium;
+    private javax.swing.JRadioButton R_black_player;
+    private javax.swing.JRadioButton R_white_easy;
+    private javax.swing.JRadioButton R_white_hard;
+    private javax.swing.JRadioButton R_white_medium;
+    private javax.swing.JRadioButton R_white_player;
     private javax.swing.ButtonGroup WHITE;
     private javax.swing.JLabel feedback;
     private javax.swing.JPanel gamePanel;
@@ -390,18 +466,39 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton10;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JRadioButton jRadioButton7;
-    private javax.swing.JRadioButton jRadioButton8;
-    private javax.swing.JRadioButton jRadioButton9;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JButton pauseButton;
     private javax.swing.JButton restartButton;
+    private javax.swing.JTextField status_box;
     private javax.swing.JButton stopButton;
+    private javax.swing.JTextField timer_box;
     // End of variables declaration//GEN-END:variables
+
+   
+    @Override
+    public boolean isBlack() {
+        throw new UnsupportedOperationException("Main GUI is not a player"); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void startRole() {
+        throw new UnsupportedOperationException("Main GUI is not a player"); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void endGame() {
+        t.stop();
+        run =false;
+        started = false;
+        feedback.setText(GameGUI.getFeedback());
+        status_box.setText(GameGUI.isBlackTurn()?"BLACK WINS":"WHITE WINS");
+        restartButton.setEnabled(false);
+        stopButton.setEnabled(false);
+        pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
+        enableRadioButtons();
+    }
+
+    @Override
+    public boolean isNeutral() {
+        return true;
+    }
 }
