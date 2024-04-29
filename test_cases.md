@@ -1,5 +1,3 @@
-# Game Issues and Responses
-
 | Case NO | Description | Steps | Expected | Actual | Response |
 |---------|-------------|-------|----------|--------|----------|
 | 1       | Game does not stop after 1 player wins | 1-win as player1<br> 2-try moving player2’s pieces<br> 3-try moving player1’s piece’s after he has won! | Game stops and announces winner | Game continues normally even letting other player win afterwards | Fixed |
@@ -13,3 +11,8 @@
 | 9       | Game user interaction | 1-open the game and play | Game should display whose turn it is | Game doesn’t display whose turn it is |
 | 10      | Display game recommended age | 1-open the game | Recommended age should be displayed in the options menu | Options menu does not have recommended age. |
 | 11      | Losing conditions | 1-open the game <br>2-touch a gobblet that cannot be played at the moment | You should automatically lose the game | Game continues |
+| 12      | Game has no name | 1-open the main game GUI | Game has descriptive name | Game does not have descriptive name |
+| 13      | Human can pick piece during AI vs AI game | 1-open the main game GUI <br>2-select CPU vs CPU <br>3-pick a gobblet | Gobblet should not be picked | Gobblet is picked |
+| 14      | Piece picked and returned to its original place | 1-pick a piece <br>2-try to select the original position of the piece not any new position | Game should say, “Illegal move: you can’t return the piece to its original position” | Game says (illegal move: can’t overtake bigger or equal piece) |
+| 15      | Piece picked and clicked on | 1-pick a piece <br>2-click on the piece | Game should say, “Illegal move: piece must be placed on board” | Game says (illegal move: can’t overtake bigger or equal piece) |
+| 16      | Piece picked and game paused | 1-pick a piece <br>2-click pause <br>3-click resume | Game forgets the turn and the piece is left hanged | Player should be able to move picked piece |

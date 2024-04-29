@@ -1,7 +1,10 @@
 package gobblet;
 
 public interface Observer {
-	boolean isBlack();
+    boolean isBlack();
     void startRole();
     void endGame();
+    default boolean isNeutral(){
+        return false;
+    } 
 }
