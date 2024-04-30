@@ -20,12 +20,7 @@ public class Notifier {
     }
     public void notifyPlayer(boolean isBlack){
         for(Observer o : observers){
-            if(!o.isNeutral() && o.isBlack() == isBlack)o.startRole();
+            if(o.isBlack() == isBlack)o.startRole();
         }
-    }
-
-    public void addNeutralObserver(Observer o) {
-        if(!o.isNeutral())throw new IllegalArgumentException("non-playing observers must be neutrals!!");
-        observers.add(o);
     }
 }

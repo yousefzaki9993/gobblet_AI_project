@@ -12,8 +12,10 @@ public class Hard implements ScoreEval {
     public boolean draw = false;
     protected HashMap<Long, Integer> positionsCounter = new HashMap<Long, Integer>();
     private Board board;
-    
-    
+
+    public Hard(Board board) {
+        this.board = board;
+    }
 
     public long calculateSimpleHash() {
         long hash = 0;
@@ -65,8 +67,7 @@ public class Hard implements ScoreEval {
     }
 
     @Override
-    public final int evaluateBoard(Board board ) {
-        this.board = board;
+    public final int evaluateBoard() {
         if (draw) return 0;
 
         int[][] groupsMap = getGroupsMap();
