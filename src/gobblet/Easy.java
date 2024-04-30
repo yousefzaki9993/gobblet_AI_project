@@ -5,14 +5,12 @@ public class Easy implements ScoreEval {
     private Board board ;
     boolean isBlack ;
 
-    public Easy(Board board){
-        this.board=board;
-        this.isBlack=false;
-    }
+  
 
     @Override
-    public int evaluateBoard() {
-    
+    public int evaluateBoard(Board board) {
+        this.board=board;
+        this.isBlack=false;
         int score = 0;
 
         // Evaluate rows
