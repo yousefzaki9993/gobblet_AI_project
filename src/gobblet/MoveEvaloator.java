@@ -14,7 +14,27 @@ public class MoveEvaloator {
         this.board = board;
     }
 
-
+    public void Eval(boolean isBlack, float time, ScoreEval ev) {
+        try {
+            BoardNode root = new BoardNode(board, null, 0, 0);
+            BoardTree tree = new BoardTree(root);
+            if (isBlack) {
+                root.setMinimizer();
+            } else {
+                root.setMaximizer();
+            }
+            tree.generateTree(Math.round(2 * time), root);
+            
+            tree.MinMax();
+            destY = tree.destY;
+            destX = tree.destX;
+            PieceToMove = tree.PieceToMove;
+           
+            
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(MoveEvaloator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public int getDestX() {
         return destX;
