@@ -28,7 +28,7 @@ public class GameGUI extends JPanel {
     private static boolean run = false;
     private static String feedback = null;
     private static boolean GO;
-
+    private static boolean playerTurn = false; 
     public static class player implements Observer {
 
         private final boolean isBlack;
@@ -45,6 +45,8 @@ public class GameGUI extends JPanel {
         @Override
         public void startRole() {
             isBlackTurn = isBlack;
+            playerTurn = true;
+            
         }
 
         @Override
@@ -86,19 +88,20 @@ public class GameGUI extends JPanel {
         run = true;
         isBlackTurn = false;
         Observer p1, p2;
+        gs = new GameSystem();
         switch (pt1) {
             case USER:
                 p1 = new player(false);
                 break;
             case CPU_EASY:
-                p1 = new player(false);
+                p1 = new AIPlayer(false, 1, gs);
                 break;
             case CPU_MID:
-                p1 = new player(false);
+                p1 = new AIPlayer(false, 2, gs);
                 break;
 
             case CPU_HARD:
-                p1 = new player(false);
+                p1 = new AIPlayer(false, 3, gs);
                 break;
             default:
                 throw new AssertionError();
@@ -108,19 +111,19 @@ public class GameGUI extends JPanel {
                 p2 = new player(true);
                 break;
             case CPU_EASY:
-                p2 = new player(true);
+                p2 = new AIPlayer(true, 1, gs);
                 break;
             case CPU_MID:
-                p2 = new player(true);
+                p2 = new AIPlayer(true, 2, gs);
                 break;
 
             case CPU_HARD:
-                p2 = new player(true);
+                p2 = new AIPlayer(true, 3, gs);
                 break;
             default:
                 throw new AssertionError();
         }
-        gs = new GameSystem(p1, p2);
+       gs.setPlayers(p1, p2);
 
     }
 
@@ -155,7 +158,8 @@ public class GameGUI extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!run) {
+                
+                if (!run || !playerTurn) {
                     return;
                 }
                 Point p = e.getPoint();
@@ -187,14 +191,17 @@ public class GameGUI extends JPanel {
                         feedback = "Cannot pick other player piece!";
                     }
                 } else {
+                    playerTurn = false;
                     picked = !gs.move(isBlackTurn, x_index, y_index);
                     if (!picked) {
                         feedback = "Move Accepted!";
+                        
                     } else {
                         feedback = gs.getBoardLastIllegalNote();
+                        playerTurn = true;
                     }
                 }
-
+                
                 if (run) {
                     repaint();
 
