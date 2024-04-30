@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package gobblet;
 
 import java.util.logging.Level;
@@ -25,7 +29,7 @@ public class MoveEvaloator {
             }
             tree.generateTree(Math.round(2 * time), root);
             
-            tree.MinMax();
+            tree.AlphaBetaPruning();
             destY = tree.destY;
             destX = tree.destX;
             PieceToMove = tree.PieceToMove;
