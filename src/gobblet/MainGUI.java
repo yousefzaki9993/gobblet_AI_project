@@ -6,11 +6,9 @@ package gobblet;
 
 import gobblet.GameGUI.playerType;
 import javax.swing.Timer;
-/**
- *
- * @author Ghaith
- */
-public class MainGUI extends javax.swing.JFrame implements Observer{
+
+
+public class MainGUI extends javax.swing.JFrame implements Observer {
 
     private static boolean run = false;
     private static boolean started = false;
@@ -19,7 +17,8 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
     Timer t;
     private long startTime;
     private long pauseTime;
-    
+    private boolean isBlackTurn = false;
+
     /**
      * Creates new form MainGUI
      */
@@ -59,6 +58,7 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
         feedback = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gobblets");
 
         gamePanel.setMaximumSize(new java.awt.Dimension(600, 600));
         gamePanel.setMinimumSize(new java.awt.Dimension(600, 600));
@@ -289,14 +289,14 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
         GameGUI.stop();
-        GameGUI.start(pt1, pt2);
+        ((GameGUI) gamePanel).start(pt1, pt2);
         gamePanel.repaint();
         feedback.setText("Game Restarted!");
         status_box.setText("WHITE TURN");
         GameGUI.addNeutralObserver(this);
         startTime = System.currentTimeMillis();
     }//GEN-LAST:event_restartButtonActionPerformed
-    private void disableRadioButtons(){
+    private void disableRadioButtons() {
         R_black_player.setEnabled(false);
         R_black_easy.setEnabled(false);
         R_black_medium.setEnabled(false);
@@ -306,7 +306,8 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
         R_white_medium.setEnabled(false);
         R_white_hard.setEnabled(false);
     }
-    private void enableRadioButtons(){
+
+    private void enableRadioButtons() {
         R_black_player.setEnabled(true);
         R_black_easy.setEnabled(true);
         R_black_medium.setEnabled(true);
@@ -317,9 +318,9 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
         R_white_hard.setEnabled(true);
     }
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        if(!started){
-            
-            GameGUI.start(pt1,pt2);
+        if (!started) {
+
+            ((GameGUI) gamePanel).start(pt1, pt2);
             gamePanel.repaint();
             stopButton.setEnabled(true);
             restartButton.setEnabled(true);
@@ -340,15 +341,15 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
             });
             t.start();
             GameGUI.addNeutralObserver(this);
-        }
-        else if (!run) {
+            isBlackTurn = false;
+        } else if (!run) {
             GameGUI.resume();
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png")));
             run = true;
             feedback.setText("game resumed!");
             startTime += System.currentTimeMillis() - pauseTime;
             t.start();
-        }else{
+        } else {
             GameGUI.pause();
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
             run = false;
@@ -356,11 +357,11 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
             pauseTime = System.currentTimeMillis();
             t.stop();
         }
-        
+
     }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        run=false;
+        run = false;
         started = false;
         GameGUI.stop();
         pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
@@ -405,11 +406,11 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
     }//GEN-LAST:event_R_black_hardActionPerformed
 
     private void gamePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gamePanelMouseClicked
-        if(run){
-            status_box.setText(GameGUI.isBlackTurn()?"BLACK TURN":"WHITE TURN");
+        if (run) {
+
             feedback.setText(GameGUI.getFeedback());
         }
-        
+
     }//GEN-LAST:event_gamePanelMouseClicked
 
     /**
@@ -475,7 +476,6 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
     private javax.swing.JTextField timer_box;
     // End of variables declaration//GEN-END:variables
 
-   
     @Override
     public boolean isBlack() {
         throw new UnsupportedOperationException("Main GUI is not a player"); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -489,14 +489,23 @@ public class MainGUI extends javax.swing.JFrame implements Observer{
     @Override
     public void endGame() {
         t.stop();
-        run =false;
+        run = false;
         started = false;
         feedback.setText(GameGUI.getFeedback());
-        status_box.setText(GameGUI.isBlackTurn()?"BLACK WINS":"WHITE WINS");
+        status_box.setText(isBlackTurn ? "BLACK WINS" : "WHITE WINS");
         restartButton.setEnabled(false);
         stopButton.setEnabled(false);
         pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
         enableRadioButtons();
+    }
+
+    @Override
+    public void switchRole() {
+        isBlackTurn = !isBlackTurn;
+        if (run) {
+            status_box.setText(isBlackTurn ? "BLACK TURN" : "WHITE TURN");
+        }
+        feedback.setText(GameGUI.getFeedback());
     }
 
     @Override
