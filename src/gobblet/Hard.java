@@ -9,25 +9,9 @@ public class Hard implements ScoreEval {
     public static final int PIECES_COUNT = 4;
     public static final int[] PIECES = {1, 2, 4, 8};
     public static final int DUMMY = -1;
-    public boolean draw = false;
     protected HashMap<Long, Integer> positionsCounter = new HashMap<Long, Integer>();
     private Board board;
 
-    
-        /**
-         * Calculates a simple hash for the current board configuration.
-         *
-         * @return The calculated hash.
-         */
-        public long calculateSimpleHash() {
-            long hash = 0;
-            for (int i = 0; i < BOARD_SIZE; i++) {
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    hash = 31 * hash + board.getPiece(i, j).getSize();
-                }
-            }
-            return hash;
-        }
     
         /**
          * Creates a map of player positions on the board.
@@ -82,8 +66,7 @@ public class Hard implements ScoreEval {
         @Override
         public final int evaluateBoard(Board board) {
             this.board = board;
-            if (draw) return 0;
-    
+
             int[][] groupsMap = getGroupsMap();
     
             int result = 0;
