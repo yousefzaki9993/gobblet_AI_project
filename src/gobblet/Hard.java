@@ -67,7 +67,7 @@ public class Hard implements ScoreEval {
         public final int evaluateBoard(Board board) {
             this.board = board;
 
-            int[][] groupsMap = getGroupsMap();
+            int[][] groupsMap = getBonusMap();
     
             int result = 0;
     
@@ -83,14 +83,14 @@ public class Hard implements ScoreEval {
          * Generates a map representing the groups on the game board based on rows, columns, and diagonals.
          * Each cell in the map contains the cumulative bonus points assigned to the corresponding group.
          *
-         * @return A 2D array representing the groups map.
+         * @return A 2D array representing the totalBonus.
          */
-        protected final int[][] getGroupsMap() {
+        protected final int[][] getBonusMap() {
             // Initialize 2D arrays to store cumulative bonuses for row, column, and diagonal groups.
-            int[][] groupsMap = new int[BOARD_SIZE][BOARD_SIZE];
-            int[][] rowGroupsMap = new int[BOARD_SIZE][BOARD_SIZE];
-            int[][] colGroupsMap = new int[BOARD_SIZE][BOARD_SIZE];
-            int[][] diagGroupsMap = new int[BOARD_SIZE][BOARD_SIZE];
+            int[][] totalBonus = new int[BOARD_SIZE][BOARD_SIZE];
+            int[][] rowBonus = new int[BOARD_SIZE][BOARD_SIZE];
+            int[][] colBonus = new int[BOARD_SIZE][BOARD_SIZE];
+            int[][] diagonalBonus = new int[BOARD_SIZE][BOARD_SIZE];
             
             // Get the current player positions on the board.
             int[][] playerMap = getPlayerMap();
@@ -102,7 +102,7 @@ public class Hard implements ScoreEval {
                     if (playerMap[i][j] == DUMMY) continue;
         
                     // Check and update groups in rows.
-                    if (rowGroupsMap[i][j] == 0) {
+                    if (rowBonus[i][j] == 0) {
                         int size = 0;
                         // Count consecutive pieces in the same row.
                         for (int l = j; l < BOARD_SIZE; l++) {
@@ -114,12 +114,12 @@ public class Hard implements ScoreEval {
                         int bonus = mapGroupLengthToBonus(size);
                         // Update bonuses for each cell in the group.
                         for (int l = j; l < j + size; l++) {
-                            rowGroupsMap[i][l] += bonus;
+                            rowBonus[i][l] += bonus;
                         }
                     }
         
                     // Check and update groups in columns.
-                    if (colGroupsMap[i][j] == 0) {
+                    if (colBonus[i][j] == 0) {
                         int size = 0;
                         // Count consecutive pieces in the same column.
                         for (int l = i; l < BOARD_SIZE; l++) {
@@ -131,12 +131,12 @@ public class Hard implements ScoreEval {
                         int bonus = mapGroupLengthToBonus(size);
                         // Update bonuses for each cell in the group.
                         for (int l = i; l < i + size; l++) {
-                            colGroupsMap[l][j] += bonus;
+                            colBonus[l][j] += bonus;
                         }
                     }
         
                     // Check and update groups for the diagonals.
-                    if ((diagGroupsMap[i][j] == 0) && (((i - j) == 0) || ((i + j) == BOARD_SIZE - 1))) {
+                    if ((diagonalBonus[i][j] == 0) && (((i - j) == 0) || ((i + j) == BOARD_SIZE - 1))) {
                         int size = 0;
                         if ((i - j) == 0) {
                             // Count consecutive pieces in the main diagonal.
@@ -158,20 +158,20 @@ public class Hard implements ScoreEval {
                         // Update bonuses for each cell in the group.
                         for (int l = i; l < i + size; l++) {
                             if ((i - j) == 0) {
-                                diagGroupsMap[l][l] += bonus;
+                                diagonalBonus[l][l] += bonus;
                             } else {
-                                diagGroupsMap[l][BOARD_SIZE - 1 - l] += bonus;
+                                diagonalBonus[l][BOARD_SIZE - 1 - l] += bonus;
                             }
                         }
                     }
         
                     // Sum the bonuses from row, column, and diagonal groups for the current cell.
-                    groupsMap[i][j] = rowGroupsMap[i][j] + colGroupsMap[i][j] + diagGroupsMap[i][j];
+                    totalBonus[i][j] = rowBonus[i][j] + colBonus[i][j] + diagonalBonus[i][j];
                 }
             }
         
             // Return the final map of groups with cumulative bonuses.
-            return groupsMap;
+            return totalBonus;
         }
     
         /**
