@@ -1,5 +1,5 @@
 package gobblet;
-
+//necessary imports
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +16,16 @@ public class BoardNode implements Comparable<BoardNode> {
     private int PrevX;
     private int PrevY;
     private Piece PrevPiece;
-    private BoardNode alpha = null;
-    private BoardNode beta = null;
+    private boolean draw = false;
 
-    //constuctor
+    /**
+     * Constructor for BoardNode.
+     *
+     * @param board The current state of the board.
+     * @param PrevPiece The piece played in the previous move.
+     * @param PrevX The X-coordinate of the previous move.
+     * @param PrevY The Y-coordinate of the previous move.
+     */
     public BoardNode(Board board, Piece PrevPiece, int PrevX, int PrevY) {
         this.board = board;
         this.PrevPiece = PrevPiece;
@@ -27,40 +33,59 @@ public class BoardNode implements Comparable<BoardNode> {
         this.PrevY = PrevY;
     }
 
+   
+    /**
+     * Deletes the board associated with this node.
+     */
     public void deleteBoard() {
         board = null;
     }
-    // Getters and setters for other attributes
+    /**
+     * Gets the board associated with this node.
+     *
+     * @return The board associated with this node.
+     */
 
     public Board getBoard() {
         return board;
     }
-
+    /**
+     * Sets the board associated with this node.
+     *
+     * @param board The board to be set.
+     */
     public void setBoard(Board board) {
         this.board = board;
     }
-
-    // methods 
+    /**
+     * Gets the list of child nodes.
+     *
+     * @return List of child nodes.
+     */
     public List<BoardNode> getChildren() {
-//		List<BoardNode> childrenCopy = new ArrayList<>();
-//    	if(children!= null) {
-//    	    childrenCopy = new ArrayList <> (children); // To prevent external modification 
-//    	}
-
         return children;
     }
-
+    /**
+     * Adds a child node to the list of children.
+     *
+     * @param child The child node to be added.
+     */
     public void addChild(BoardNode child) {
-        //check if there is no children and create list of children 
         if (children == null) {
             children = new ArrayList<>();
         }
         children.add(child);
     }
-
-    public void evaluate(int depth, ScoreEval ev, BoardNode alphaP, BoardNode betaP) {
-        alpha = alphaP;
-        beta = betaP;
+    /**
+     * Evaluates the node based on the current depth, evaluation method, alpha, beta, and a parameter 'b'.
+     *
+     * @param depth The depth of the evaluation in the game tree.
+     * @param ev The evaluation method to be used.
+     * @param alpha The alpha value for alpha-beta pruning.
+     * @param beta The beta value for alpha-beta pruning.
+     * @param b A parameter used in the evaluation.
+     */
+    public void evaluate(int depth, ScoreEval ev, Integer alpha, Integer beta, int b) {
         if (ev == null) {
             throw new IllegalArgumentException("invalide evaloator");
         }
@@ -70,31 +95,44 @@ public class BoardNode implements Comparable<BoardNode> {
         if (score == 10000 || score == -10000) {
             return;
         }
+        if(draw){
+            System.out.println("drawnode");
+            if(maxPlayer){
+                score = 5000;
+                return;
+            }
+            score = -5000;
+            return;
+        }
         if (depth == 0) {
             this.score = ev.evaluateBoard(board);
             return;
         }
-        if (board == null) {
-            throw new IllegalStateException("board missing!");
+        if (board == null && children.isEmpty()) {
+            return;
         }
-        if (children == null) {
+
+        if (board != null) {
             generateChildren();
         }
-        for (BoardNode child : children) {
-            child.evaluate(depth - 1, ev, alpha, beta);
+        if (b > children.size()) {
+            b = children.size();
+        }
+        for (int i = 0; i < children.size(); i++) {
+            children.get(i).evaluate(depth - 1, ev, alpha, beta, (b - i - 1 > 0) ? b - i - 1 : 1);
             if (maxPlayer) {
-                if (alpha == null || child.getScore() > alpha.getScore()) {
-                    alpha = child;
-                    if (beta != null && beta.getScore() <= alpha.getScore()) {
-                        this.score = alpha.getScore();
+                if (alpha == null || children.get(i).getScore() > alpha) {
+                    alpha = children.get(i).getScore();
+                    if (beta != null && beta <= alpha) {
+                        this.score = alpha;
                         return;
                     }
                 }
             } else {
-                if (beta == null || child.getScore() < beta.getScore()) {
-                    beta = child;
-                    if (alpha != null && beta.getScore() <= alpha.getScore()) {
-                        this.score = beta.getScore();
+                if (beta == null || children.get(i).getScore() < beta) {
+                    beta = children.get(i).getScore();
+                    if (alpha != null && beta <= alpha) {
+                        this.score = beta;
                         return;
                     }
                 }
@@ -110,16 +148,25 @@ public class BoardNode implements Comparable<BoardNode> {
             });
         }
         if (maxPlayer) {
-            this.score = alpha.getScore();
+            this.score = alpha;
         } else {
-            this.score = beta.getScore();
+            this.score = beta;
+        }
+        if (b < children.size()) {
+            children.subList(b, children.size()).clear();
         }
     }
-
+    /**
+     * Gets the score associated with this node.
+     *
+     * @return The score associated with this node.
+     */
     public int getScore() {
         return score;
     }
-
+    /**
+     * Sets the node as a maximizer.
+     */
     public void setMaximizer() {
         maxPlayer = true;
 
@@ -129,7 +176,9 @@ public class BoardNode implements Comparable<BoardNode> {
             }
         }
     }
-
+    /**
+     * Sets the node as a minimizer.
+     */
     public void setMinimizer() {
         maxPlayer = false;
 
@@ -139,20 +188,35 @@ public class BoardNode implements Comparable<BoardNode> {
             }
         }
     }
-
+    /**
+     * Checks if the node is associated with the maximizing player.
+     *
+     * @return True if the node is associated with the maximizing player, false otherwise.
+     */
     public boolean isMaxPlayer() {
         return maxPlayer;
     }
-
-    public void setScore(int score) {      //Temporary function for testing
+    /**
+     * Sets the score associated with this node.
+     *
+     * @param score The score to be set.
+     */
+    public void setScore(int score) {
         this.score = score;
     }
-
+    /**
+     * Compares this node with another node for sorting purposes.
+     *
+     * @param node The node to be compared.
+     * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+     */
     @Override
     public int compareTo(BoardNode node) {
         return Integer.compare(this.score, node.score);
     }
-
+    /**
+     * Generates child nodes for the current node.
+     */
     private void generateChildren() {
         if (children != null) {
             throw new IllegalStateException("node already has children");
@@ -193,6 +257,9 @@ public class BoardNode implements Comparable<BoardNode> {
                                     int score = line[0].isBlack() ? -10000 : 10000;
                                     boardnode.setScore(score);
                                     boardnode.deleteBoard();
+                                } else if (boardnode.getBoard().isDraw()) {
+                                    boardnode.setDraw();
+                                    boardnode.deleteBoard();
                                 }
 
                             }
@@ -205,18 +272,34 @@ public class BoardNode implements Comparable<BoardNode> {
         }
         this.deleteBoard(); //setting board to null after generating children to save memory
     }
-
+    /**
+     * Gets the X-coordinate of the previous move.
+     *
+     * @return The X-coordinate of the previous move.
+     */
     public int getPrevX() {
         return PrevX;
     }
-
+    /**
+     * Gets the Y-coordinate of the previous move.
+     *
+     * @return The Y-coordinate of the previous move.
+     */
     public int getPrevY() {
         return PrevY;
     }
-
+    /**
+     * Gets the piece played in the previous move.
+     *
+     * @return The piece played in the previous move.
+     */
     public Piece getPrevPiece() {
         return PrevPiece;
     }
-
-  
+    /**
+     * Sets the draw flag to indicate a draw in the current node.
+     */
+    private void setDraw() {
+        draw = true;
+    }
 }
