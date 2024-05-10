@@ -7,17 +7,20 @@ package gobblet;
 import gobblet.GameGUI.playerType;
 import javax.swing.Timer;
 
-
+/**
+ *
+ * @author Ghaith
+ */
 public class MainGUI extends javax.swing.JFrame implements Observer {
 
-    private static boolean run = false;
-    private static boolean started = false;
-    private static playerType pt1 = playerType.USER;
-    private static playerType pt2 = playerType.USER;
-    Timer t;
-    private long startTime;
-    private long pauseTime;
-    private boolean isBlackTurn = false;
+    private static boolean run = false;// indicate running game (not paused)
+    private static boolean started = false;// indicated started game
+    private static playerType pt1 = playerType.USER;//indicate player 1 type
+    private static playerType pt2 = playerType.USER;//indicate player 2 type
+    Timer t; // timer of the game 
+    private long startTime; // game start time 
+    private long pauseTime; // game pause time to be subtracted when resumed
+    private boolean isBlackTurn = false; // indicates whos turn it is
 
     /**
      * Creates new form MainGUI
@@ -288,15 +291,16 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
-        GameGUI.stop();
-        ((GameGUI) gamePanel).start(pt1, pt2);
-        gamePanel.repaint();
-        feedback.setText("Game Restarted!");
-        status_box.setText("WHITE TURN");
-        GameGUI.addNeutralObserver(this);
-        startTime = System.currentTimeMillis();
+        GameGUI.stop(); // stop game
+        ((GameGUI) gamePanel).start(pt1, pt2); //start new game
+        gamePanel.repaint(); // repaint board
+        feedback.setText("Game Restarted!"); // give user feedback
+        status_box.setText("WHITE TURN"); //set status
+        GameGUI.addNeutralObserver(this);// add the main gui as neutral observer to recieve game notifications
+        startTime = System.currentTimeMillis(); // save start time
     }//GEN-LAST:event_restartButtonActionPerformed
     private void disableRadioButtons() {
+        // disable all radio buttons when game is running so player type not be edited
         R_black_player.setEnabled(false);
         R_black_easy.setEnabled(false);
         R_black_medium.setEnabled(false);
@@ -308,6 +312,7 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
     }
 
     private void enableRadioButtons() {
+        // enable all radio buttons to allow user to choose players types
         R_black_player.setEnabled(true);
         R_black_easy.setEnabled(true);
         R_black_medium.setEnabled(true);
@@ -318,18 +323,19 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
         R_white_hard.setEnabled(true);
     }
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
-        if (!started) {
+        if (!started) { // if not started  (play button)
 
-            ((GameGUI) gamePanel).start(pt1, pt2);
-            gamePanel.repaint();
-            stopButton.setEnabled(true);
-            restartButton.setEnabled(true);
-            pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png")));
-            run = true;
-            started = true;
-            disableRadioButtons();
-            feedback.setText("game started!");
-            status_box.setText("WHITE TURN");
+            ((GameGUI) gamePanel).start(pt1, pt2); // start the game
+            gamePanel.repaint(); // repaint board
+            stopButton.setEnabled(true); // enable stop button
+            restartButton.setEnabled(true); //enable restart button
+            pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png"))); // change icon from start to pause
+            run = true; // indicate the running game
+            started = true;// indicate the starting game
+            disableRadioButtons();// prevent changing players
+            feedback.setText("game started!"); // give user feedback
+            status_box.setText("WHITE TURN");// change status to turn
+            // start timer
             startTime = System.currentTimeMillis();
             t = new Timer(1000, (e) -> {
                 long now = System.currentTimeMillis();
@@ -340,41 +346,47 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
                 timer_box.setText(String.format("%02d:%02d", elapsedMinutes, elapsedSeconds));
             });
             t.start();
+            // add the gui as neutral observer to recive notifications
             GameGUI.addNeutralObserver(this);
+            // set flag as white turn
             isBlackTurn = false;
-        } else if (!run) {
-            GameGUI.resume();
+        } else if (!run) { // if start but not running "paused" (resume button)
+            GameGUI.resume(); // resume game
+            // toggle button icon to pause
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-pause-80.png")));
-            run = true;
-            feedback.setText("game resumed!");
+            run = true;// run game flag
+            feedback.setText("game resumed!"); // give feedback
+            //resume timer
             startTime += System.currentTimeMillis() - pauseTime;
             t.start();
-        } else {
-            GameGUI.pause();
+        } else { // if running pause game ( pause button)
+            GameGUI.pause();// pause game
+            // toggle icon to play
             pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
-            run = false;
-            feedback.setText("game paused!");
-            pauseTime = System.currentTimeMillis();
-            t.stop();
+            run = false;//pause game flag
+            feedback.setText("game paused!"); // give feedback
+            pauseTime = System.currentTimeMillis(); //record pause time so it can be added later 
+            t.stop(); // stop timer
         }
 
     }//GEN-LAST:event_pauseButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        run = false;
-        started = false;
-        GameGUI.stop();
+        run = false; // stop flag
+        started = false; // stop flag
+        GameGUI.stop(); // stop game
+        // toggle pause button
         pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
-        stopButton.setEnabled(false);
-        restartButton.setEnabled(false);
-        enableRadioButtons();
-        gamePanel.repaint();
+        stopButton.setEnabled(false);// disable stop button
+        restartButton.setEnabled(false);// disable restart button
+        enableRadioButtons(); // enable player choosing
+        gamePanel.repaint(); // repaint board
         feedback.setText("Game Stopped!");
         t.stop();
     }//GEN-LAST:event_stopButtonActionPerformed
-
+    // change players when radio buttons are clicked
     private void R_white_playerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_playerActionPerformed
-        pt1 = playerType.USER;
+        pt1 = playerType.USER; 
     }//GEN-LAST:event_R_white_playerActionPerformed
 
     private void R_white_easyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_white_easyActionPerformed
@@ -407,7 +419,7 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
 
     private void gamePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gamePanelMouseClicked
         if (run) {
-
+            // give feedback on user interaction with game
             feedback.setText(GameGUI.getFeedback());
         }
 
@@ -488,11 +500,19 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
 
     @Override
     public void endGame() {
-        t.stop();
-        run = false;
-        started = false;
-        feedback.setText(GameGUI.getFeedback());
-        status_box.setText(isBlackTurn ? "BLACK WINS" : "WHITE WINS");
+        // game over 
+        t.stop(); //stop timer
+        run = false; // stop flag
+        started = false; //stop flag
+        feedback.setText(GameGUI.getFeedback()); //give feedback
+        //get winner and display it
+        Boolean winner = GameGUI.getWinner();
+        if (winner == null) {
+            status_box.setText("DRAW");
+        } else {
+            status_box.setText(winner ? "BLACK WINS" : "WHITE WINS");
+        }
+        // reset butons condition
         restartButton.setEnabled(false);
         stopButton.setEnabled(false);
         pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gobblet/icons8-play-80.png")));
@@ -501,15 +521,18 @@ public class MainGUI extends javax.swing.JFrame implements Observer {
 
     @Override
     public void switchRole() {
-        isBlackTurn = !isBlackTurn;
+        // on any side played
+        isBlackTurn = !isBlackTurn; // toggle turn
         if (run) {
-            status_box.setText(isBlackTurn ? "BLACK TURN" : "WHITE TURN");
+            status_box.setText(isBlackTurn ? "BLACK TURN" : "WHITE TURN"); //display status
         }
-        feedback.setText(GameGUI.getFeedback());
+        if (run && pt1 != playerType.USER && pt2 != playerType.USER) {
+            feedback.setText("AI vs AI game initiated!"); // in case both are ai's
+        }
     }
 
     @Override
     public boolean isNeutral() {
-        return true;
+        return true; // indicate this is a neutral observer
     }
 }
