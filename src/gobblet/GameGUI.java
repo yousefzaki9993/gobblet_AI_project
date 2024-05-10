@@ -27,46 +27,73 @@ public class GameGUI extends JPanel {
     private static boolean picked = false;
     private static boolean run = false;
     private static String feedback = null;
-    private static boolean GO;
-    private static boolean playerTurn = false; 
-    public static class player implements Observer {
+    private static boolean playerTurn = false;
 
+    public class player implements Observer {
+
+        private boolean Neutral = false;
         private final boolean isBlack;
 
+        // playing player 
         public player(boolean isBlack) {
             this.isBlack = isBlack;
         }
 
-        @Override
-        public boolean isBlack() {
-            return isBlack;
+        //neutral player to update board
+        public player() {
+            this.Neutral = true;
+            isBlack = false; // just so no exception is thrown
         }
 
         @Override
+        // returns wether this player instance is black or white
+        public boolean isBlack() {
+            if (Neutral) {
+                throw new UnsupportedOperationException("GameGUI is not a player");
+            }
+            return isBlack;
+        }
+
+        // start player role
+        @Override
         public void startRole() {
-            isBlackTurn = isBlack;
-            playerTurn = true;
-            
+            isBlackTurn = isBlack; // switch panel flag
+            playerTurn = true; // user player can move pieces
+
+        }
+
+        @Override
+        public boolean isNeutral() {
+            return Neutral; // if user is player return false the panel generates a neutral observer if no players
         }
 
         @Override
         public void endGame() {
+            GameGUI.this.repaint(); // paint final board
+            // check for game over reason and give feedback for user
             if (picked) {
-                feedback = "GAME OVER! A PLAYER MOVED AN UNMOVABLE PIECE!!";
+                feedback = "GAME OVER! A PLAYER MOVED AN UNMOVABLE PIECE!!"; 
             } else {
-                feedback = "GAME OVER! A PLAYER MADE A LINE OF 4!!";
+                if (gs.getWinner() == null) {
+                    feedback = "GAME OVER! moves repeated 3 times!!";
+                } else {
+                    feedback = "GAME OVER! A PLAYER MADE A LINE OF 4!!";
+                }
             }
 
             picked = false;
-            GO = true;
 
         }
 
+        @Override
+        public void switchRole() {
+            GameGUI.this.repaint(); // repaint board on role switch
+        }
     }
 
     @Override
     public void paint(Graphics g) {
-
+        // paint pieces and board
         g.clearRect(0, 0, WIDTH, HEIGHT);
         g.setColor(Color.black);
         g.fillRect(POSX - 20, POSY - 20, GameGUI.WIDTH / 2 + 40, GameGUI.HEIGHT / 2 + 40);
@@ -78,15 +105,18 @@ public class GameGUI extends JPanel {
         }
     }
 
+    //enum for players types
     public enum playerType {
         USER, CPU_EASY, CPU_MID, CPU_HARD
     }
-
-    public static void start(playerType pt1, playerType pt2) {
+    
+    // start game and create gamesystem  and players for new game
+    public void start(playerType pt1, playerType pt2) {
+        //reset flags
         picked = false;
-        GO = false;
         run = true;
         isBlackTurn = false;
+        // create players accourding to given types
         Observer p1, p2;
         gs = new GameSystem();
         switch (pt1) {
@@ -123,29 +153,36 @@ public class GameGUI extends JPanel {
             default:
                 throw new AssertionError();
         }
-       gs.setPlayers(p1, p2);
+        gs.setPlayers(p1, p2);
+        // if no gui player create gui neutral observer 
+        if ((p1 instanceof AIPlayer) && (p2 instanceof AIPlayer)) {
+            gs.addNeutralObserver(new player());
+        }
 
     }
-
+    
+    // pause game
     public static void pause() {
         run = false;
+        gs.pause();
     }
-
+    //resume paused game
     public static void resume() {
         run = true;
+        gs.resume();
     }
-
+    // stop game and delete gamesystem
     public static void stop() {
         gs = null;
         run = false;
         isBlackTurn = false;
         picked = false;
     }
-
+    // return whos turn it is
     public static boolean isBlackTurn() {
-        return GO ? gs.getWinner() : isBlackTurn;
+        return isBlackTurn;
     }
-
+    // create new game gui panel
     public GameGUI() {
 
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -158,7 +195,7 @@ public class GameGUI extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                
+
                 if (!run || !playerTurn) {
                     return;
                 }
@@ -190,18 +227,18 @@ public class GameGUI extends JPanel {
                     } else {
                         feedback = "Cannot pick other player piece!";
                     }
-                } else {
+                } else {//move
                     playerTurn = false;
                     picked = !gs.move(isBlackTurn, x_index, y_index);
                     if (!picked) {
                         feedback = "Move Accepted!";
-                        
+
                     } else {
                         feedback = gs.getBoardLastIllegalNote();
                         playerTurn = true;
                     }
                 }
-                
+
                 if (run) {
                     repaint();
 
@@ -232,7 +269,7 @@ public class GameGUI extends JPanel {
     static void drawCircleByCenter(Graphics g, int x, int y, int radius) {
         g.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
-
+    // iterate movables and paint them
     public static void paintPieces(Graphics g) throws IOException {
         if (!run) {
             return;
@@ -255,7 +292,7 @@ public class GameGUI extends JPanel {
 
         }
     }
-
+    // paint pice accourding to its color and size
     public static void paintPiece(Graphics g, Piece p, int x, int y) throws IOException {
         int x_pos = x * (WIDTH / 8) + POSX + 4;
         int y_pos = y * (HEIGHT / 8) + POSY + 4;
@@ -301,4 +338,9 @@ public class GameGUI extends JPanel {
     public static void addNeutralObserver(Observer o) {
         gs.addNeutralObserver(o);
     }
+
+    public static Boolean getWinner() {
+        return gs.getWinner();
+    }
+
 }
