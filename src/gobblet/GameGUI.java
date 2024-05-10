@@ -28,6 +28,7 @@ public class GameGUI extends JPanel {
     private static boolean run = false;
     private static String feedback = null;
     private static boolean playerTurn = false;
+    private static boolean playing;
 
     public class player implements Observer {
 
@@ -157,6 +158,9 @@ public class GameGUI extends JPanel {
         // if no gui player create gui neutral observer 
         if ((p1 instanceof AIPlayer) && (p2 instanceof AIPlayer)) {
             gs.addNeutralObserver(new player());
+            playing = false;
+        }else {
+            playing = true;
         }
 
     }
@@ -196,7 +200,7 @@ public class GameGUI extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
 
-                if (!run || !playerTurn) {
+                if (!run || !playerTurn || !playing) {
                     return;
                 }
                 Point p = e.getPoint();
