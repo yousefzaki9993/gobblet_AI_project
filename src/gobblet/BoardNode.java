@@ -16,6 +16,8 @@ public class BoardNode implements Comparable<BoardNode> {
     private int PrevX;
     private int PrevY;
     private Piece PrevPiece;
+    private BoardNode alpha = null;
+    private BoardNode beta = null;
 
     //constuctor
     public BoardNode(Board board, Piece PrevPiece, int PrevX, int PrevY) {
@@ -56,7 +58,9 @@ public class BoardNode implements Comparable<BoardNode> {
         children.add(child);
     }
 
-    public void evaluate(int depth, ScoreEval ev) {
+    public void evaluate(int depth, ScoreEval ev, BoardNode alphaP, BoardNode betaP) {
+        alpha = alphaP;
+        beta = betaP;
         if (ev == null) {
             throw new IllegalArgumentException("invalide evaloator");
         }
@@ -77,7 +81,24 @@ public class BoardNode implements Comparable<BoardNode> {
             generateChildren();
         }
         for (BoardNode child : children) {
-            child.evaluate(depth - 1, ev);
+            child.evaluate(depth - 1, ev, alpha, beta);
+            if (maxPlayer) {
+                if (alpha == null || child.getScore() > alpha.getScore()) {
+                    alpha = child;
+                    if (beta != null && beta.getScore() <= alpha.getScore()) {
+                        this.score = alpha.getScore();
+                        return;
+                    }
+                }
+            } else {
+                if (beta == null || child.getScore() < beta.getScore()) {
+                    beta = child;
+                    if (alpha != null && beta.getScore() <= alpha.getScore()) {
+                        this.score = beta.getScore();
+                        return;
+                    }
+                }
+            }
         }
         if (!maxPlayer) {
             children.sort((o1, o2) -> {
@@ -88,7 +109,11 @@ public class BoardNode implements Comparable<BoardNode> {
                 return -(o1.compareTo(o2));
             });
         }
-        this.score = children.get(0).getScore();
+        if (maxPlayer) {
+            this.score = alpha.getScore();
+        } else {
+            this.score = beta.getScore();
+        }
     }
 
     public int getScore() {
@@ -193,4 +218,5 @@ public class BoardNode implements Comparable<BoardNode> {
         return PrevPiece;
     }
 
+  
 }
