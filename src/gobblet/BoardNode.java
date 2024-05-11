@@ -92,29 +92,32 @@ public class BoardNode implements Comparable<BoardNode> {
         if (depth < 0) {
             throw new IllegalArgumentException("depth must be >= 0");
         }
+        //if the move causes a win 
         if (score == 10000 || score == -10000) {
             return;
         }
+        //if the move causes a draw
         if(draw){
             System.out.println("drawnode");
-            if(maxPlayer){
-                score = 5000;
-                return;
-            }
-            score = -5000;
+            score = 0;
             return;
         }
+        // if depth = 0 evaluate node using evaluator function
         if (depth == 0) {
             this.score = ev.evaluateBoard(board);
             return;
         }
+        // if it is leaf node which is evaluated recently return
         if (board == null && children.isEmpty()) {
             return;
         }
-
+        // if the node is not leaf node but children are not generated generate them
         if (board != null) {
             generateChildren();
         }
+        
+        // evaluate each child recursivly in aloop
+        //  b(chil) =  b(parent)-rank of child
         if (b > children.size()) {
             b = children.size();
         }
@@ -138,6 +141,7 @@ public class BoardNode implements Comparable<BoardNode> {
                 }
             }
         }
+        // sort children for next iterations
         if (!maxPlayer) {
             children.sort((o1, o2) -> {
                 return o1.compareTo(o2);
@@ -147,14 +151,20 @@ public class BoardNode implements Comparable<BoardNode> {
                 return -(o1.compareTo(o2));
             });
         }
+        // if maximizer alpha will be used by parent and if not beta will be
         if (maxPlayer) {
             this.score = alpha;
         } else {
             this.score = beta;
         }
+
         if (b < children.size()) {
             children.subList(b, children.size()).clear();
         }
+    }
+    //returns node score last evaluated
+    public int getScore() {
+        return score;
     }
     /**
      * Gets the score associated with this node.
@@ -272,6 +282,7 @@ public class BoardNode implements Comparable<BoardNode> {
         }
         this.deleteBoard(); //setting board to null after generating children to save memory
     }
+
     /**
      * Gets the X-coordinate of the previous move.
      *
