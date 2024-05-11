@@ -5,32 +5,72 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameSystem {
-
+    // The game board
     private final Board board;
+    // Indicates the current turn (true for black, false for white)
     private boolean turn;
+    // Flag to determine if the game is currently running
     private boolean running;
+    // Holds the winner of the game
     private Boolean winner = null; //null if running
+    // Represents the currently picked piece
     private Piece picked = null;
+    // Notifier for game events
     private Notifier notifier;
 
+     /**
+     * Pauses the game.
+     */
+    public void pause() {
+        if (running) {
+            notifier.pause();
+        }
+    }
+    /**
+     * Resumes the paused game.
+     */
+    public void resume() {
+        notifier.resume();
+    }
+    /**
+     * Constructor for GameSystem. 
+     */
     public GameSystem() {//player1 isBlack = false & player2 isBlack=true
         board = new Board();
         turn = false;
-        
+
         notifier = new Notifier();
-        
+
     }
-    public void setPlayers(Observer player1, Observer player2){
-        if(running)throw new IllegalStateException();
+    /**
+     * Sets the players for the game.
+     * @param player1 The first player
+     * @param player2 The second player
+     */
+    public void setPlayers(Observer player1, Observer player2) {
+        if (running) {
+            throw new IllegalStateException();
+        }
         notifier.add(player1);
         notifier.add(player2);
         running = true;
         notifier.notifyPlayer(false);
     }
+
+    
+    /**
+     * Adds a neutral observer to the game.
+     * @param o The observer to be added
+     */
     public void addNeutralObserver(Observer o) {
         notifier.addNeutralObserver(o);
     }
 
+    /**
+     * Unpicks the currently picked piece.
+     * @param isBlackTurn Indicates whether it is black's turn
+     * @return True if successful, false otherwise
+     */
     public boolean unpick(boolean isBlackTurn) {
         if (!picked.isOnBoard()) {
             picked.unpick();
@@ -39,7 +79,13 @@ public class GameSystem {
         }
         return false;
     }
-
+    /**
+     * Moves a piece on the board.
+     * @param isBlackTurn Indicates whether it is black's turn
+     * @param toX The destination X coordinate
+     * @param toY The destination Y coordinate
+     * @return True if the move is valid, false otherwise
+     */
     public boolean move(boolean isBlackTurn, int toX, int toY) { //returns false if move is invalide
         if (picked.getX() == toX && picked.getY() == toY) {//unpick
             if (toY > -1 && toY < 4) {
@@ -63,15 +109,21 @@ public class GameSystem {
             check_for_winner();
             if (running) {
                 turn = !turn;
+                notifier.notifyPlayer(!isBlackTurn);//notify end of turn
             }
-            notifier.notifyPlayer(!isBlackTurn);//notify end of turn
 
             return true;
         }
 
         return false;
     }
-
+    /**
+     * Picks a piece from the board.
+     * @param isBlackTurn Indicates whether it is black's turn
+     * @param initX The initial X coordinate of the piece
+     * @param initY The initial Y coordinate of the piece
+     * @return True if successful, false otherwise
+     */
     public boolean pick(boolean isBlackTurn, int initX, int initY) {
 
         if (!running) {
@@ -134,17 +186,26 @@ public class GameSystem {
         }
         return false;
     }
-
+    /**
+     * Checks for a winner in the game.
+     */
     public void check_for_winner() {
         Piece[] line = board.getWinningLine();
         if (line != null) {
             winner = line[0].isBlack();
             running = false;
             notifier.notifyPlayersEnd();//notify end of the game
+
+        } else if (board.isDraw()) {
+            running = false;
+            notifier.notifyPlayersEnd();//notify end of the game
         }
 
     }
-
+    /**
+     * Returns a copy of the current game board.
+     * @return A copy of the game board
+     */
     public Board getBoardCopy() {
         try {
             return board.clone();
@@ -153,19 +214,31 @@ public class GameSystem {
         }
         return null;
     }
-
+    /**
+     * Checks if the game is over.
+     * @return True if the game is over, false otherwise
+     */
     public boolean isOver() {
         return !running;
     }
-
-    public boolean getWinner() { // returns true if black is winner false if white is winner
+    /**
+     * Gets the winner of the game.
+     * @return True if black is the winner, false if white is the winner
+     */
+    public Boolean getWinner() { // returns true if black is winner false if white is winner
         return winner;
     }
-
+    /**
+     * Gets the current turn in the game.
+     * @return True if it is black's turn, false otherwise
+     */
     public boolean getTurn() { // true is blck turn
         return turn;
     }
-
+    /**
+     * Gets the last note related to an illegal move on the board.
+     * @return The last illegal note on the board
+     */
     public String getBoardLastIllegalNote() {
         return board.getLastIllegalNote();
     }
