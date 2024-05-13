@@ -216,7 +216,7 @@ public class GameGUI extends JPanel {
                     } else {
                         feedback = gs.getBoardLastIllegalNote();
                     }
-                } else if ((y_index == 4 || y_index == -1) && picked) {//unpick & repick
+                } else if (((y_index == 4 && !isBlackTurn) || (y_index == -1 && isBlackTurn)) && picked) {//unpick & repick
                     picked = !gs.unpick(isBlackTurn);
                     picked = gs.pick(isBlackTurn, x_index, y_index);
                     if (picked) {
