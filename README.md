@@ -2,14 +2,12 @@
 
 | **Name** | **ID** |
 | --- | --- |
-| Hebatuallah Ayman Mohamed Mokhtar Abdulaziz | 1900022 |
-| Ghaith Bassam Zaza | 1901458 |
-| Abdelrhman Rady Hassan Ahmed | 1900725 |
-| Ahmed Ehab Fathy Abdelwahaab | 1901073 |
-| Andrew Samir Kamel Gayed | 1900242 |
-| Islam Zidan Mohammed Alalamy | 1900146 |
-| Mina Mounir Farid Gendi | 1901384 |
-| Abdelrahman Mohammed Abdelaziz Ibrahim | 1900829 |
+| yousef moahmed zaki  | 21p0079 |
+| Ahmed Ibrahim Eldera  | 20p2701 |
+| khaled Elaseed Ahmed  | 20p4211 |
+| Ahmed Mohamed Salah | 2100669 |
+| Hams Assem Ahmed  | 20p3713 |
+
 
 This project was done by Senior 2 CSE students for the course: CSE472s (UG2018) - Artificial Intelligence
 

@@ -26,12 +26,15 @@ public class MoveEvaloator {
         this.board = board;
     }
 
-    public void Eval(boolean isBlack, float time, ScoreEval ev,int limit) {
+    public void Eval(boolean isBlack, float time, ScoreEval ev) {
         Thread t = new Thread(() -> {
             BoardTree tree = new BoardTree(board, ev, isBlack);
-            
-            for(int i = 1; i <= limit ; i++){
+            int i = 0; // i = depth 
+            while (true) {
+                i++;
                 System.out.println(isBlack ? "BLACK:" : "WHITE:");
+
+                
 
                 tree.evaluate(i);
 
@@ -40,9 +43,6 @@ public class MoveEvaloator {
                 destY = tree.getDestY();
                 PieceToMove = tree.getPieceToMove();
                 System.out.println("max depth = " + i);
-                if (tree.getBestScore() == 10000 || tree.getBestScore() == -10000) {
-                    break;
-                }
             }
 
         });

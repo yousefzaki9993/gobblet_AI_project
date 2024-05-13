@@ -1,0 +1,264 @@
+[33mcommit 2129f218f84bebafe3c1ee93f3b257ac3cc63153[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 23:27:54 2024 +0300
+
+    modified and fixed issues in MoveEval, and tuned parameters in AIplayer
+
+[33mcommit 4122230079d3f208485ebe6f6c3584b99c1ed962[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 23:01:49 2024 +0300
+
+    Update GameGUI.java
+
+[33mcommit 0b4754f8ccce51a273cee6e03ebdd544ab082237[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 22:39:55 2024 +0300
+
+    fix: changed evaluate and generate to support draw conditions
+
+[33mcommit 98e45dbe046d97889046d80808cbaf930e0869cf[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 21:29:32 2024 +0300
+
+    Added support for draw & code comments
+
+[33mcommit b3022eb93e67423fa922e867bfad88c727c422dc[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 21:27:07 2024 +0300
+
+    updated the class diagram & the board class
+
+[33mcommit d5aa0f5bf52b7df2262560853477c2a2d5fa4b30[m
+Author: der3 <hotoeldera@yahoo.com>
+Date:   Mon May 13 21:19:41 2024 +0300
+
+    update:added 10 extra test cases
+
+[33mcommit bfa72753f19f21d23bf34fbfb1bd2a1c6101b118[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Sat May 11 16:21:32 2024 +0300
+
+    Add files via upload
+
+[33mcommit 4a9c49584dacdf53363c07d16e50740b59ebffd8[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Sat May 11 16:20:00 2024 +0300
+
+    fix: changed evaluate and generate to support draw conditions
+
+[33mcommit b277e174ccce1ca94eeba94cf2e3a5803641c027[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Sat May 11 16:17:40 2024 +0300
+
+    Added support for draw and code comments
+
+[33mcommit 2daa7db67cc7d87714002ae438f14712b3ca2d14[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Sat May 11 15:58:03 2024 +0300
+
+    Add files via upload
+
+[33mcommit 906a894bf9c17a74171889c399ebb6bea2dcc7ff[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Sat May 11 15:56:02 2024 +0300
+
+    update:added 10 extra test cases
+
+[33mcommit f01ad7a61902a41d0de2f14e7a1a10f7f99c54de[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Fri May 10 17:38:56 2024 +0300
+
+    Update GameGUI.java
+
+[33mcommit 262c1e6d89b6c6329108088a42df53e4c2dd123f[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Fri May 10 17:35:31 2024 +0300
+
+    Update GameGUI.java
+
+[33mcommit 90687aa2883c065e03b4f62f94eb4449771b2348[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Fri May 10 17:32:10 2024 +0300
+
+    Update MainGUI.java
+
+[33mcommit 61cef7c369ef1f7781352a3607fe54464b6e7306[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Fri May 10 16:59:26 2024 +0300
+
+    [200~
+
+[33mcommit 557e5d63a01578c4a89036e7b4f3fc16faaa6f25[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Fri May 10 16:56:42 2024 +0300
+
+    made modifications in boardNode and moveEvaloator classes after chang…
+
+[33mcommit 6c5111aab088f6ffa643b31bdc473bbe0628c73a[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 01:48:17 2024 +0300
+
+    solved AI not pausing bug
+
+[33mcommit 1e0b115917eaf55906c34728a679de5c2b7fe41e[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 01:44:39 2024 +0300
+
+    deleted evaluation lines to move it to piece
+
+[33mcommit a5fa3bc0e802f0d9ffd6564a43d8aaab848f5374[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 00:59:54 2024 +0300
+
+    docs: updates to some docs
+
+[33mcommit 38cadeb901be18a2546b012499704081ed92db9b[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 00:38:06 2024 +0300
+
+    fix: fixed some errors
+
+[33mcommit 4379624916c60ac5022d51ce0114db921eaa3dc8[m
+Merge: f1b15df 9933829
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 00:27:49 2024 +0300
+
+    Merge branch 'main' of https://github.com/yousefzaki9993/gobblet_AI_project
+
+[33mcommit f1b15dfd3c5d0c29601e1c3a9c6b6465b2c64d51[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon May 6 00:25:44 2024 +0300
+
+    docs: added documentation
+
+[33mcommit 993382901f5b4b8bbb4554bcefa9fbf1663019d6[m
+Author: yousef zaki <127123801+yousefzaki9993@users.noreply.github.com>
+Date:   Sat May 4 12:46:39 2024 +0300
+
+    Update AIPlayer.java
+
+[33mcommit 116a4c6f70642ef06b5fc4488584230a8e670426[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:43:05 2024 +0300
+
+    docs: added doc strings to the code
+
+[33mcommit ca322ea5d082e4c987b104be621b5db46fd0e0d6[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:41:35 2024 +0300
+
+    added critical test cases concerning gameplay and status display
+
+[33mcommit 27e28af405d2e640b9b821b3bc1c3354f802034d[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:39:58 2024 +0300
+
+    added test cases for gameplay and GUI
+
+[33mcommit 33464dae8de12352df2ac1d55d420d01d1b44b8c[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:38:33 2024 +0300
+
+    update:changed evaluation of leaf nodes to work according to move eva…
+
+[33mcommit 8f8487c8046ccbe9c6268e70c60237cc53f7c86c[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:36:37 2024 +0300
+
+    add files via upload
+
+[33mcommit 2ed3e5a654fbd64663879e14fc5cf60c5d394ca2[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:34:44 2024 +0300
+
+    feat: added heuristic
+
+[33mcommit a37a61107d65b148ad77f4e3c935c78ab6e96dae[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:32:49 2024 +0300
+
+    Added new features
+
+[33mcommit c1aec5ea55fe1fddb1b36d473ad1b862c974ba08[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Thu May 2 23:30:42 2024 +0300
+
+    added new features and fixed some bugs causing the game not to respon…
+
+[33mcommit 3b7e0b96b4ef9a483f93179ac9dd617f6b95b414[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Tue Apr 30 23:05:36 2024 +0300
+
+    updated GameGUI class
+
+[33mcommit 8dae6aed7f3d56b16698fc5166d249ea52381e95[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Tue Apr 30 22:47:05 2024 +0300
+
+    updated eval function to work with alphabeta pruning
+
+[33mcommit dc628c75e9825b6cd7923eea348c3b7e8d1e94b5[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Tue Apr 30 22:08:30 2024 +0300
+
+    added eval function based on minmax
+
+[33mcommit 943feafa3558c2aee5373b97956b38812527fe9e[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Tue Apr 30 22:05:54 2024 +0300
+
+    feat: added alpha beta pruning
+
+[33mcommit 8797714d74bf5df44f54479b30f4c8dd2f1fad05[m
+Author: HamsAssem14 <20P3713@eng.asu.edu.eg>
+Date:   Tue Apr 30 21:44:37 2024 +0300
+
+    initialized MoveEvaloator class
+
+[33mcommit 103ae8de86977675425b9a0f1f43d91b16a52c90[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Tue Apr 30 21:32:26 2024 +0300
+
+    Update BoardNode.java
+
+[33mcommit 7bf69054d389fbb579bba8fbb003d6674e36160e[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Tue Apr 30 21:26:58 2024 +0300
+
+    neutral observer method is added
+
+[33mcommit 3ba9f645046c952152c8af0bbe01c7c79aaeffa7[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Tue Apr 30 21:21:59 2024 +0300
+
+    update: opened new test cases in GUI
+
+[33mcommit 4683ae3de4e27644cfed58daa50ee73701d86f24[m
+Author: Khaled Elsaeed <khaledawad552002@gmail.com>
+Date:   Tue Apr 30 21:07:43 2024 +0300
+
+    [200~
+
+[33mcommit 16928d6e9714b15367242fdee63d13e3f85a2d43[m
+Author: Ahmed Salah <2100669@eng.asu.edu.eg>
+Date:   Mon Apr 29 21:29:34 2024 +0300
+
+    Hard and Easy Classes Updated
+
+[33mcommit 1f361bb509fed0b3309df5dd577d2c401c9c58c7[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Sun Apr 28 19:19:32 2024 +0300
+
+    Updated GameSystem.java
+
+[33mcommit 0599111c3f66a1df86d7a2bda6663b23549c5e60[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Sun Apr 28 19:17:39 2024 +0300
+
+    Added AIPlayer class
+
+[33mcommit f895268fd177f3152a1b6b0679e451e39047acd5[m
+Author: yousefzaki9993 <yousefzaki9993@gmail.com>
+Date:   Sun Apr 28 19:15:05 2024 +0300
+
+    feat: Added minimax, updated t
