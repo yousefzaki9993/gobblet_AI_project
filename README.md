@@ -1,5 +1,11 @@
 
 
+**GobbletGame**
+
+**Link to exe file** : https://drive.google.com/file/d/1abzjzQP1coYAbRfBYllSxO6r1TS2VctC/view
+
+
+
 | **Name** | **ID** |
 | --- | --- |
 | yousef moahmed zaki  | 21p0079 |
@@ -8,8 +14,6 @@
 | Ahmed Mohamed Salah | 2100669 |
 | Hams Assem Ahmed  | 20p3713 |
 
-
-This project was done by Senior 2 CSE students for the course: CSE472s (UG2018) - Artificial Intelligence
 
 **Chosen Programming language:**
 
