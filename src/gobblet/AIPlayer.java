@@ -30,10 +30,10 @@ public class AIPlayer implements Observer{
                 mv.Eval(isBlack, 1f, new Easy(),1);//time limit is not important 
                 break;
             case 2:
-                mv.Eval(isBlack, 0.25f, new Easy(),2);
+                mv.Eval(isBlack, 0.25f, new Hard(),2);
                 break;
             case 3:
-                mv.Eval(isBlack, 2f, new Easy(),10); // maximum depth is not important
+                mv.Eval(isBlack, 2f, new Hard(),10); // maximum depth is not important
                 break;
             default:
                 throw new IllegalArgumentException("difficulty must be 1, 2 or 3!");

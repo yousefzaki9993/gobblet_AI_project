@@ -33,7 +33,10 @@ public class BoardNode implements Comparable<BoardNode> {
         this.PrevY = PrevY;
     }
 
-   
+    public BoardNode(Board board) {
+    }
+
+
     /**
      * Deletes the board associated with this node.
      */
@@ -163,9 +166,7 @@ public class BoardNode implements Comparable<BoardNode> {
         }
     }
     //returns node score last evaluated
-    public int getScore() {
-        return score;
-    }
+   
     /**
      * Gets the score associated with this node.
      *
